@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AOTR4 | Drone in the Snow</title>
+  <meta name="description" content="A modern HTML and CSS forensic writeup for the AOTR4 drone challenge.">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="page-shell">
+    <header class="hero">
+      <nav class="topbar" aria-label="Primary">
+        <a class="brand" href="#top">AOTR4</a>
+        <div class="topbar-links">
+          <a href="#brief">Brief</a>
+          <a href="#steps">Steps</a>
+          <a href="#result">Result</a>
+        </div>
+      </nav>
+
+      <div class="hero-grid" id="top">
+        <section class="hero-copy">
+          <p class="eyebrow">Digital Forensics Writeup</p>
+          <h1>A Drone in the Snow</h1>
+          <p class="lead">
+            Rebuilding the drone's last route, isolating the crash event, and pulling out the exact coordinates
+            from raw telemetry logs using a clean step-by-step workflow.
+          </p>
+
+          <div class="hero-meta">
+            <span>Category: Drone Forensics</span>
+            <span>Format: Static HTML/CSS</span>
+            <span>Style: Modern case study</span>
+          </div>
+        </section>
+
+        <aside class="hero-card">
+          <p class="card-label">Quick Summary</p>
+          <h2>Mission route, crash marker, and GPS evidence all line up.</h2>
+          <p>
+            The workflow below follows the same spirit as the 0xhouda writeup: inspect the mission plan first,
+            move into log triage, then answer the challenge with compact evidence-backed findings.
+          </p>
+          <a class="button-link" href="#steps">Read the investigation</a>
+        </aside>
+      </div>
+    </header>
+
+    <main>
+      <section class="intro-grid" id="brief">
+        <article class="glass-card">
+          <p class="section-tag">Challenge Brief</p>
+          <h2>What we need to recover</h2>
+          <p>
+            The evidence bundle contains route screenshots and terminal captures from a drone log analysis session.
+            Our goal is to turn those fragments into a readable investigation page that explains what happened and
+            how the crash location was derived.
+          </p>
+        </article>
+
+        <article class="glass-card">
+          <p class="section-tag">Toolkit</p>
+          <h2>What gets used</h2>
+          <ul class="tool-list">
+            <li>QGroundControl to inspect the mission path</li>
+            <li>`mavlogdump.py` to enumerate telemetry and message types</li>
+            <li>Focused GPS and MSG extraction for the final answer</li>
+          </ul>
+        </article>
+      </section>
+
+      <section class="showcase">
+        <div class="showcase-copy">
+          <p class="section-tag">Mission Overview</p>
+          <h2>The flight path immediately gives us the story arc</h2>
+          <p>
+            Before touching the terminal output, we look at the big picture. The drone launches from the southwest,
+            loops across the Citadella area, crosses the river, and continues toward the city center. This context
+            makes the later crash and coordinate extraction much easier to trust.
+          </p>
+        </div>
+
+        <figure class="feature-frame">
+          <img src="1.png" alt="QGroundControl mission overview showing the full drone route over Budapest.">
+        </figure>
+      </section>
+
+      <section class="steps" id="steps">
+        <div class="section-heading">
+          <p class="section-tag">Step by Step</p>
+          <h2>Rebuilding the analysis like a proper forensic note</h2>
+        </div>
+
+        <article class="step-card">
+          <div class="step-head">
+            <span class="step-number">01</span>
+            <div>
+              <h3>Start with the full mission trace</h3>
+              <p>
+                The first screenshot shows the entire route and elevation profile. It tells us the mission is not a
+                random short hop, but a multi-waypoint planned flight with a long return arc.
+              </p>
+            </div>
+          </div>
+          <div class="image-grid two-up">
+            <figure>
+              <img src="1.png" alt="Wide mission route screenshot.">
+              <figcaption>Full route view for global context.</figcaption>
+            </figure>
+            <figure>
+              <img src="2.png" alt="Closer view of the Citadella segment of the mission.">
+              <figcaption>Closer look at the waypoint cluster around Citadella.</figcaption>
+            </figure>
+          </div>
+        </article>
+
+        <article class="step-card accent-card">
+          <div class="step-head">
+            <span class="step-number">02</span>
+            <div>
+              <h3>Zoom in on the mission geometry</h3>
+              <p>
+                A tighter crop helps show the spline waypoints, hover times, and the shape of the path around the
+                landmark. That matters because it confirms the mission was intentionally programmed, not flown freehand.
+              </p>
+            </div>
+          </div>
+          <div class="image-grid two-up">
+            <figure>
+              <img src="3.png" alt="Citadella mission path with spline waypoint settings visible.">
+              <figcaption>Spline waypoint settings reveal mission behavior.</figcaption>
+            </figure>
+            <figure>
+              <img src="4.png" alt="Bridge crossing segment from the mission path.">
+              <figcaption>The route extends across the bridge into the city.</figcaption>
+            </figure>
+          </div>
+        </article>
+
+        <article class="step-card">
+          <div class="step-head">
+            <span class="step-number">03</span>
+            <div>
+              <h3>Enumerate the available log record types</h3>
+              <p>
+                Once the visual route is understood, the next move is to ask the binary log what record families are
+                available. This is the fastest way to know whether GPS, message, attitude, and mission artifacts exist.
+              </p>
+            </div>
+          </div>
+          <figure class="terminal-frame">
+            <img src="5.png" alt="Terminal output from mavlogdump listing message types inside the log file.">
+            <figcaption>`mavlogdump.py log.bin --show-types` confirms the useful telemetry families.</figcaption>
+          </figure>
+        </article>
+
+        <article class="step-card">
+          <div class="step-head">
+            <span class="step-number">04</span>
+            <div>
+              <h3>Read the human-readable mission messages</h3>
+              <p>
+                The `MSG` records are especially helpful because they narrate the mission. We can see initialization,
+                GPS usage, mission start, and waypoint progress, which turns the opaque log into a timeline.
+              </p>
+            </div>
+          </div>
+          <figure class="terminal-frame">
+            <img src="6.png" alt="Terminal output displaying mission and system messages from the drone log.">
+            <figcaption>Message records expose mission milestones and state changes.</figcaption>
+          </figure>
+        </article>
+
+        <article class="step-card">
+          <div class="step-head">
+            <span class="step-number">05</span>
+            <div>
+              <h3>Find the crash event first, then pivot to GPS</h3>
+              <p>
+                A compact `MSG` query reveals the critical line: the simulator reports a ground hit at a descending
+                velocity. Around that same timestamp, the GPS record gives us the exact latitude and longitude we need.
+              </p>
+            </div>
+          </div>
+          <div class="image-grid evidence-strip">
+            <figure>
+              <img src="8.png" alt="Terminal snippet showing the SIM Hit ground message.">
+              <figcaption>Crash indicator from the message log.</figcaption>
+            </figure>
+            <figure>
+              <img src="7.png" alt="Terminal snippet showing GPS coordinates near the crash timestamp.">
+              <figcaption>GPS fix tied to the same event window.</figcaption>
+            </figure>
+          </div>
+        </article>
+
+        <article class="step-card">
+          <div class="step-head">
+            <span class="step-number">06</span>
+            <div>
+              <h3>Answer the challenge with concise extraction commands</h3>
+              <p>
+                The final terminal snippets boil the solution down into direct outputs: first coordinate pair and a
+                maximum groundspeed value. This is the kind of clean ending that makes a writeup easy to audit.
+              </p>
+            </div>
+          </div>
+          <div class="image-grid three-up">
+            <figure>
+              <img src="10.png" alt="Terminal output extracting the first latitude and longitude pair from the GPS records.">
+              <figcaption>First GPS coordinate pair.</figcaption>
+            </figure>
+            <figure>
+              <img src="9.png" alt="Terminal output showing the maximum groundspeed extracted from GPS records.">
+              <figcaption>Maximum groundspeed extraction.</figcaption>
+            </figure>
+            <figure class="note-card">
+              <div>
+                <p class="section-tag">Why it works</p>
+                <h3>Small commands, strong evidence</h3>
+                <p>
+                  Each query answers one narrow question. That keeps the workflow transparent, reproducible, and
+                  friendly for readers who want to validate the result themselves.
+                </p>
+              </div>
+            </figure>
+          </div>
+        </article>
+      </section>
+
+      <section class="result-band" id="result">
+        <div>
+          <p class="section-tag">Final Readout</p>
+          <h2>The writeup now reads like a guided investigation</h2>
+          <p>
+            This version keeps the original step-by-step forensic rhythm, but packages it into a cleaner visual system:
+            stronger hierarchy, softer contrast, larger media frames, and more breathing room between findings.
+          </p>
+        </div>
+        <div class="result-panel">
+          <p class="result-label">Recovered evidence</p>
+          <ul class="result-list">
+            <li>Mission route reconstructed from QGroundControl screenshots</li>
+            <li>Crash event isolated from `MSG` records</li>
+            <li>Coordinates and speed extracted from GPS data</li>
+          </ul>
+        </div>
+      </section>
+    </main>
+  </div>
+</body>
+</html>
