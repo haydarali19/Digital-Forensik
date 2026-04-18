@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AOTR4 | Drone in the Snow</title>
-  <meta name="description" content="A modern HTML and CSS forensic writeup for the AOTR4 drone challenge.">
+  <title>AOTR4 | Drone di Tengah Salju</title>
+  <meta name="description" content="Writeup digital forensik berbahasa Indonesia untuk challenge AOTR4 dengan tampilan HTML dan CSS modern.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,36 +13,36 @@
       <nav class="topbar" aria-label="Primary">
         <a class="brand" href="#top">AOTR4</a>
         <div class="topbar-links">
-          <a href="#brief">Brief</a>
-          <a href="#steps">Steps</a>
-          <a href="#result">Result</a>
+          <a href="#brief">Ringkasan</a>
+          <a href="#steps">Langkah</a>
+          <a href="#result">Hasil</a>
         </div>
       </nav>
 
       <div class="hero-grid" id="top">
         <section class="hero-copy">
-          <p class="eyebrow">Digital Forensics Writeup</p>
-          <h1>A Drone in the Snow</h1>
+          <p class="eyebrow">Writeup Digital Forensik</p>
+          <h1>Drone di Tengah Salju</h1>
           <p class="lead">
-            Rebuilding the drone's last route, isolating the crash event, and pulling out the exact coordinates
-            from raw telemetry logs using a clean step-by-step workflow.
+            Di challenge ini kita diminta membaca jejak penerbangan drone, memahami alur misinya, lalu menarik
+            informasi penting dari log mentah sampai ketemu titik yang paling relevan untuk menjawab soal.
           </p>
 
           <div class="hero-meta">
-            <span>Category: Drone Forensics</span>
-            <span>Format: Static HTML/CSS</span>
-            <span>Style: Modern case study</span>
+            <span>Kategori: Forensik Drone</span>
+            <span>Format: HTML/CSS Statis</span>
+            <span>Gaya: Writeup Modern</span>
           </div>
         </section>
 
         <aside class="hero-card">
-          <p class="card-label">Quick Summary</p>
-          <h2>Mission route, crash marker, and GPS evidence all line up.</h2>
+          <p class="card-label">Ringkasan Singkat</p>
+          <h2>Rute misi, pesan crash, dan data GPS saling menguatkan.</h2>
           <p>
-            The workflow below follows the same spirit as the 0xhouda writeup: inspect the mission plan first,
-            move into log triage, then answer the challenge with compact evidence-backed findings.
+            Alurnya saya buat seperti writeup referensi: mulai dari melihat gambaran besar misi, masuk ke log,
+            lalu mengerucut ke bukti inti secara pelan-pelan sampai jawabannya benar-benar terasa masuk akal.
           </p>
-          <a class="button-link" href="#steps">Read the investigation</a>
+          <a class="button-link" href="#steps">Mulai investigasi</a>
         </aside>
       </div>
     </header>
@@ -50,67 +50,69 @@
     <main>
       <section class="intro-grid" id="brief">
         <article class="glass-card">
-          <p class="section-tag">Challenge Brief</p>
-          <h2>What we need to recover</h2>
+          <p class="section-tag">Gambaran Challenge</p>
+          <h2>Apa yang sedang kita cari</h2>
           <p>
-            The evidence bundle contains route screenshots and terminal captures from a drone log analysis session.
-            Our goal is to turn those fragments into a readable investigation page that explains what happened and
-            how the crash location was derived.
+            Paket bukti yang tersedia berisi screenshot QGroundControl dan beberapa hasil command dari terminal.
+            Tugas kita bukan cuma menampilkan gambar-gambar itu, tapi menyusunnya menjadi alur analisis yang rapi,
+            natural, dan mudah diikuti dari awal sampai akhir.
           </p>
         </article>
 
         <article class="glass-card">
-          <p class="section-tag">Toolkit</p>
-          <h2>What gets used</h2>
+          <p class="section-tag">Tools</p>
+          <h2>Alat yang dipakai</h2>
           <ul class="tool-list">
-            <li>QGroundControl to inspect the mission path</li>
-            <li>`mavlogdump.py` to enumerate telemetry and message types</li>
-            <li>Focused GPS and MSG extraction for the final answer</li>
+            <li>QGroundControl untuk membaca jalur misi</li>
+            <li><code>mavlogdump.py</code> untuk membongkar isi log</li>
+            <li>Filter <code>MSG</code> dan <code>GPS</code> untuk bukti inti</li>
           </ul>
         </article>
       </section>
 
       <section class="showcase">
         <div class="showcase-copy">
-          <p class="section-tag">Mission Overview</p>
-          <h2>The flight path immediately gives us the story arc</h2>
+          <p class="section-tag">Tinjauan Awal</p>
+          <h2>Dari peta misi saja, ceritanya sudah mulai kebaca</h2>
           <p>
-            Before touching the terminal output, we look at the big picture. The drone launches from the southwest,
-            loops across the Citadella area, crosses the river, and continues toward the city center. This context
-            makes the later crash and coordinate extraction much easier to trust.
+            Sebelum sibuk membaca output terminal, saya lebih suka lihat gambaran besarnya dulu. Dari sini terlihat
+            drone berangkat dari sisi barat daya, berputar di area Citadella, lalu menyeberang ke arah pusat kota.
+            Konteks seperti ini penting karena nanti saat menemukan event tertentu di log, kita sudah punya bayangan
+            posisi dan arah geraknya.
           </p>
         </div>
 
         <figure class="feature-frame">
-          <img src="1.png" alt="QGroundControl mission overview showing the full drone route over Budapest.">
+          <img src="1.png" alt="Tampilan QGroundControl yang menunjukkan rute lengkap misi drone di Budapest.">
         </figure>
       </section>
 
       <section class="steps" id="steps">
         <div class="section-heading">
-          <p class="section-tag">Step by Step</p>
-          <h2>Rebuilding the analysis like a proper forensic note</h2>
+          <p class="section-tag">Langkah demi Langkah</p>
+          <h2>Dokumentasi analisis dalam 13 langkah</h2>
         </div>
 
         <article class="step-card">
           <div class="step-head">
             <span class="step-number">01</span>
             <div>
-              <h3>Start with the full mission trace</h3>
+              <h3>Mulai dari tampilan rute secara penuh</h3>
               <p>
-                The first screenshot shows the entire route and elevation profile. It tells us the mission is not a
-                random short hop, but a multi-waypoint planned flight with a long return arc.
+                Screenshot pertama memperlihatkan keseluruhan jalur beserta profil ketinggiannya. Dari sini langsung
+                kelihatan kalau penerbangan ini bukan sekadar terbang sebentar, melainkan misi yang disusun dengan
+                banyak waypoint dan jalur yang cukup panjang.
               </p>
             </div>
           </div>
           <div class="image-grid two-up">
             <figure>
-              <img src="1.png" alt="Wide mission route screenshot.">
-              <figcaption>Full route view for global context.</figcaption>
+              <img src="1.png" alt="Tampilan rute misi secara penuh.">
+              <figcaption>Tampilan penuh ini dipakai untuk memahami konteks global misi.</figcaption>
             </figure>
             <figure>
-              <img src="2.png" alt="Closer view of the Citadella segment of the mission.">
-              <figcaption>Closer look at the waypoint cluster around Citadella.</figcaption>
+              <img src="2.png" alt="Tampilan lebih dekat pada area Citadella.">
+              <figcaption>Area Citadella terlihat jadi salah satu titik penting dalam rute.</figcaption>
             </figure>
           </div>
         </article>
@@ -119,21 +121,22 @@
           <div class="step-head">
             <span class="step-number">02</span>
             <div>
-              <h3>Zoom in on the mission geometry</h3>
+              <h3>Perbesar area yang waypoint-nya paling padat</h3>
               <p>
-                A tighter crop helps show the spline waypoints, hover times, and the shape of the path around the
-                landmark. That matters because it confirms the mission was intentionally programmed, not flown freehand.
+                Saat tampilan diperbesar, kita bisa melihat bentuk spline waypoint dan detail pergerakan drone di
+                sekitar objek tertentu. Ini membantu menegaskan kalau rute memang diprogram dengan sengaja, bukan
+                hasil manuver manual yang acak.
               </p>
             </div>
           </div>
           <div class="image-grid two-up">
             <figure>
-              <img src="3.png" alt="Citadella mission path with spline waypoint settings visible.">
-              <figcaption>Spline waypoint settings reveal mission behavior.</figcaption>
+              <img src="3.png" alt="Tampilan waypoint spline di sekitar Citadella.">
+              <figcaption>Detail waypoint memperlihatkan pola pergerakan yang terencana.</figcaption>
             </figure>
             <figure>
-              <img src="4.png" alt="Bridge crossing segment from the mission path.">
-              <figcaption>The route extends across the bridge into the city.</figcaption>
+              <img src="4.png" alt="Segmen rute yang menyeberangi jembatan ke arah kota.">
+              <figcaption>Jalur misi berlanjut melewati jembatan ke sisi kota.</figcaption>
             </figure>
           </div>
         </article>
@@ -142,16 +145,17 @@
           <div class="step-head">
             <span class="step-number">03</span>
             <div>
-              <h3>Enumerate the available log record types</h3>
+              <h3>Masuk ke log dan cek dulu jenis datanya</h3>
               <p>
-                Once the visual route is understood, the next move is to ask the binary log what record families are
-                available. This is the fastest way to know whether GPS, message, attitude, and mission artifacts exist.
+                Setelah punya gambaran visual, langkah berikutnya adalah melihat isi file log secara umum. Cara paling
+                aman adalah menanyakan dulu tipe record apa saja yang tersedia, supaya kita tahu data mana yang
+                relevan untuk dibaca lebih jauh.
               </p>
             </div>
           </div>
           <figure class="terminal-frame">
-            <img src="5.png" alt="Terminal output from mavlogdump listing message types inside the log file.">
-            <figcaption>`mavlogdump.py log.bin --show-types` confirms the useful telemetry families.</figcaption>
+            <img src="5.png" alt="Output terminal yang menampilkan daftar tipe pesan di dalam log drone.">
+            <figcaption><code>mavlogdump.py log.bin --show-types</code> menunjukkan kategori data yang tersedia.</figcaption>
           </figure>
         </article>
 
@@ -159,16 +163,17 @@
           <div class="step-head">
             <span class="step-number">04</span>
             <div>
-              <h3>Read the human-readable mission messages</h3>
+              <h3>Perhatikan bahwa record pentingnya memang ada</h3>
               <p>
-                The `MSG` records are especially helpful because they narrate the mission. We can see initialization,
-                GPS usage, mission start, and waypoint progress, which turns the opaque log into a timeline.
+                Dari daftar itu, yang paling menarik untuk tahap awal adalah <code>MSG</code> dan <code>GPS</code>.
+                Alasannya sederhana: <code>MSG</code> biasanya berisi narasi internal sistem, sementara <code>GPS</code>
+                memberi kita koordinat dan parameter pergerakan yang lebih konkret.
               </p>
             </div>
           </div>
           <figure class="terminal-frame">
-            <img src="6.png" alt="Terminal output displaying mission and system messages from the drone log.">
-            <figcaption>Message records expose mission milestones and state changes.</figcaption>
+            <img src="5.png" alt="Daftar tipe data log yang menegaskan keberadaan record MSG dan GPS.">
+            <figcaption>Keberadaan <code>MSG</code> dan <code>GPS</code> membuat arah analisis jadi lebih jelas.</figcaption>
           </figure>
         </article>
 
@@ -176,74 +181,224 @@
           <div class="step-head">
             <span class="step-number">05</span>
             <div>
-              <h3>Find the crash event first, then pivot to GPS</h3>
+              <h3>Baca pesan-pesan sistem yang bisa dipahami manusia</h3>
               <p>
-                A compact `MSG` query reveals the critical line: the simulator reports a ground hit at a descending
-                velocity. Around that same timestamp, the GPS record gives us the exact latitude and longitude we need.
+                Setelah tahu record yang dibutuhkan ada, kita bisa mulai membaca bagian <code>MSG</code>. Di sinilah
+                log mulai terasa hidup karena muncul informasi seperti versi firmware, inisialisasi misi, mode terbang,
+                sampai progres waypoint.
               </p>
             </div>
           </div>
-          <div class="image-grid evidence-strip">
-            <figure>
-              <img src="8.png" alt="Terminal snippet showing the SIM Hit ground message.">
-              <figcaption>Crash indicator from the message log.</figcaption>
-            </figure>
-            <figure>
-              <img src="7.png" alt="Terminal snippet showing GPS coordinates near the crash timestamp.">
-              <figcaption>GPS fix tied to the same event window.</figcaption>
-            </figure>
-          </div>
+          <figure class="terminal-frame">
+            <img src="6.png" alt="Output terminal berisi pesan sistem dan progres misi drone.">
+            <figcaption>Record <code>MSG</code> membantu mengubah log mentah menjadi timeline yang lebih mudah dipahami.</figcaption>
+          </figure>
         </article>
 
         <article class="step-card">
           <div class="step-head">
             <span class="step-number">06</span>
             <div>
-              <h3>Answer the challenge with concise extraction commands</h3>
+              <h3>Cari event yang paling mencurigakan dulu</h3>
               <p>
-                The final terminal snippets boil the solution down into direct outputs: first coordinate pair and a
-                maximum groundspeed value. This is the kind of clean ending that makes a writeup easy to audit.
+                Di tahap ini kita belum perlu membaca semua baris satu per satu. Yang lebih efektif adalah mencari
+                event penting, misalnya pesan yang menandakan benturan, perubahan mode, atau kondisi gagal.
+              </p>
+            </div>
+          </div>
+          <figure class="terminal-frame">
+            <img src="6.png" alt="Timeline pesan yang bisa dipakai untuk memburu event penting.">
+            <figcaption>Dari timeline ini kita tahu ada cukup konteks untuk menelusuri event akhir misi.</figcaption>
+          </figure>
+        </article>
+
+        <article class="step-card">
+          <div class="step-head">
+            <span class="step-number">07</span>
+            <div>
+              <h3>Temukan pesan benturan di log</h3>
+              <p>
+                Query yang lebih spesifik akhirnya memperlihatkan baris yang paling penting: simulator mencatat
+                <code>SIM Hit ground</code> beserta kecepatan vertikal saat menyentuh tanah. Buat saya, ini adalah
+                titik balik analisis karena setelah itu kita tinggal mengaitkannya dengan data posisi.
+              </p>
+            </div>
+          </div>
+          <div class="image-grid evidence-strip">
+            <figure>
+              <img src="8.png" alt="Potongan terminal yang menampilkan pesan SIM Hit ground.">
+              <figcaption>Inilah indikator paling jelas bahwa drone menyentuh tanah.</figcaption>
+            </figure>
+            <figure>
+              <img src="7.png" alt="Potongan terminal yang menampilkan data GPS di sekitar waktu kejadian.">
+              <figcaption>Di waktu yang berdekatan, data GPS memberi posisi drone.</figcaption>
+            </figure>
+          </div>
+        </article>
+
+        <article class="step-card">
+          <div class="step-head">
+            <span class="step-number">08</span>
+            <div>
+              <h3>Hubungkan event tadi dengan koordinat GPS</h3>
+              <p>
+                Setelah timestamp kejadian ditemukan, fokus kita bergeser ke record GPS yang berada di sekitar momen
+                itu. Dari situlah latitude, longitude, altitude, dan kecepatan bisa dibaca untuk memperkuat dugaan
+                lokasi insiden.
+              </p>
+            </div>
+          </div>
+          <figure class="terminal-frame">
+            <img src="7.png" alt="Potongan data GPS yang berkaitan dengan momen benturan.">
+            <figcaption>Latitude dan longitude pada momen yang relevan menjadi bukti posisi terkuat.</figcaption>
+          </figure>
+        </article>
+
+        <article class="step-card">
+          <div class="step-head">
+            <span class="step-number">09</span>
+            <div>
+              <h3>Catat koordinat yang muncul dari log</h3>
+              <p>
+                Pada bagian GPS terlihat nilai koordinat yang bisa langsung dijadikan pegangan. Menulis ulang nilai
+                ini di writeup penting supaya pembaca tidak harus terus-menerus memperbesar screenshot hanya untuk
+                memastikan angka yang dibaca benar.
+              </p>
+            </div>
+          </div>
+          <figure class="note-card">
+            <div>
+              <p class="section-tag">Koordinat Penting</p>
+              <h3>Latitude 47.4903055, Longitude 19.0460476</h3>
+              <p>
+                Nilai ini diambil dari data GPS yang muncul pada rentang waktu dekat dengan event benturan yang
+                terdeteksi pada pesan sistem.
+              </p>
+            </div>
+          </figure>
+        </article>
+
+        <article class="step-card accent-card">
+          <div class="step-head">
+            <span class="step-number">10</span>
+            <div>
+              <h3>Ambil juga koordinat pembuka sebagai pembanding</h3>
+              <p>
+                Selain koordinat saat insiden, kita juga bisa mengambil koordinat awal dari log GPS. Ini berguna
+                untuk membandingkan titik awal perjalanan dan melihat seberapa jauh drone bergerak selama misi.
               </p>
             </div>
           </div>
           <div class="image-grid three-up">
             <figure>
-              <img src="10.png" alt="Terminal output extracting the first latitude and longitude pair from the GPS records.">
-              <figcaption>First GPS coordinate pair.</figcaption>
+              <img src="10.png" alt="Output terminal yang mengekstrak pasangan latitude dan longitude pertama dari log GPS.">
+              <figcaption>Perintah ini mengambil koordinat pertama yang muncul di log GPS.</figcaption>
             </figure>
             <figure>
-              <img src="9.png" alt="Terminal output showing the maximum groundspeed extracted from GPS records.">
-              <figcaption>Maximum groundspeed extraction.</figcaption>
+              <img src="9.png" alt="Output terminal yang menampilkan nilai groundspeed maksimum dari log GPS.">
+              <figcaption>Sekalian bisa diambil juga nilai groundspeed maksimumnya.</figcaption>
             </figure>
             <figure class="note-card">
               <div>
-                <p class="section-tag">Why it works</p>
-                <h3>Small commands, strong evidence</h3>
+                <p class="section-tag">Catatan</p>
+                <h3>Command kecil, hasilnya jelas</h3>
                 <p>
-                  Each query answers one narrow question. That keeps the workflow transparent, reproducible, and
-                  friendly for readers who want to validate the result themselves.
+                  Saya sengaja mempertahankan command yang singkat karena lebih mudah diverifikasi dan enak dibaca
+                  ulang oleh siapa pun yang ingin mengecek hasilnya.
                 </p>
               </div>
             </figure>
           </div>
         </article>
+
+        <article class="step-card">
+          <div class="step-head">
+            <span class="step-number">11</span>
+            <div>
+              <h3>Tarik informasi kecepatan untuk menambah konteks</h3>
+              <p>
+                Walaupun yang paling penting biasanya koordinat, nilai kecepatan juga berguna untuk memberi gambaran
+                bagaimana kondisi drone ketika misi berjalan. Ini membuat kesimpulan akhir terasa lebih lengkap.
+              </p>
+            </div>
+          </div>
+          <figure class="note-card">
+            <div>
+              <p class="section-tag">Parameter Tambahan</p>
+              <h3>Groundspeed maksimum sekitar 10.24000072479248</h3>
+              <p>
+                Nilai ini bukan jawaban utama, tapi tetap menarik untuk dicatat karena membantu memberi konteks pada
+                dinamika pergerakan drone selama misi.
+              </p>
+            </div>
+          </figure>
+        </article>
+
+        <article class="step-card">
+          <div class="step-head">
+            <span class="step-number">12</span>
+            <div>
+              <h3>Susun kembali semua bukti menjadi satu alur</h3>
+              <p>
+                Sampai di sini kita sudah punya tiga lapis bukti: peta misi dari QGroundControl, narasi kejadian dari
+                <code>MSG</code>, dan posisi detail dari <code>GPS</code>. Ketiganya saling melengkapi dan membuat
+                hasil analisis terasa konsisten.
+              </p>
+            </div>
+          </div>
+          <div class="image-grid two-up">
+            <figure>
+              <img src="1.png" alt="Rute misi penuh sebagai konteks besar.">
+              <figcaption>QGroundControl memberi konteks spasial seluruh misi.</figcaption>
+            </figure>
+            <figure>
+              <img src="8.png" alt="Pesan benturan dari log sebagai bukti kejadian utama.">
+              <figcaption>Pesan benturan menjadi pengikat antara timeline dan lokasi.</figcaption>
+            </figure>
+          </div>
+        </article>
+
+        <article class="step-card">
+          <div class="step-head">
+            <span class="step-number">13</span>
+            <div>
+              <h3>Tulis kesimpulan akhir secara ringkas dan manusiawi</h3>
+              <p>
+                Kalau saya rangkum, alurnya cukup jelas: drone menjalankan misi waypoint yang terencana, lalu pada
+                satu titik log mencatat benturan ke tanah, dan koordinat GPS di sekitar momen itu memberi lokasi yang
+                bisa dijadikan jawaban utama challenge.
+              </p>
+            </div>
+          </div>
+          <figure class="note-card">
+            <div>
+              <p class="section-tag">Kesimpulan</p>
+              <h3>Log berhasil dibaca dan titik penting berhasil diisolasi</h3>
+              <p>
+                Pendekatan paling aman di challenge seperti ini adalah tidak langsung mengejar angka jawaban, tetapi
+                membangun konteks dulu. Begitu konteksnya kuat, angka-angka yang muncul dari log jadi jauh lebih mudah
+                dipercaya.
+              </p>
+            </div>
+          </figure>
+        </article>
       </section>
 
       <section class="result-band" id="result">
         <div>
-          <p class="section-tag">Final Readout</p>
-          <h2>The writeup now reads like a guided investigation</h2>
+          <p class="section-tag">Hasil Akhir</p>
+          <h2>Writeup sekarang dibaca seperti investigasi yang dipandu</h2>
           <p>
-            This version keeps the original step-by-step forensic rhythm, but packages it into a cleaner visual system:
-            stronger hierarchy, softer contrast, larger media frames, and more breathing room between findings.
+            Versi ini mempertahankan ritme writeup teknis langkah demi langkah, tapi bahasanya sudah dibuat lebih
+            natural dalam bahasa Indonesia dan susunannya dipecah menjadi 13 bagian agar mirip pola artikel referensi.
           </p>
         </div>
         <div class="result-panel">
-          <p class="result-label">Recovered evidence</p>
+          <p class="result-label">Bukti yang berhasil diangkat</p>
           <ul class="result-list">
-            <li>Mission route reconstructed from QGroundControl screenshots</li>
-            <li>Crash event isolated from `MSG` records</li>
-            <li>Coordinates and speed extracted from GPS data</li>
+            <li>Rute misi terbaca dari screenshot QGroundControl</li>
+            <li>Event benturan berhasil diisolasi dari record <code>MSG</code></li>
+            <li>Koordinat dan parameter gerak berhasil diambil dari data <code>GPS</code></li>
           </ul>
         </div>
       </section>
