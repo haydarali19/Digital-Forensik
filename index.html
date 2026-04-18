@@ -263,12 +263,12 @@
           </p>
           <div class="image-grid two-up">
             <figure class="terminal-frame">
-              <img src="5.png" alt="Daftar tipe data pada log.bin.">
-              <figcaption>Pertama, lihat dulu jenis record yang tersedia pada file log.</figcaption>
+              <img src="6.png" alt="Output MSG dari log drone yang menunjukkan awal misi.">
+              <figcaption>Record <code>MSG</code> dipakai untuk mencari awal misi dari log penerbangan.</figcaption>
             </figure>
             <figure class="terminal-frame">
-              <img src="6.png" alt="Output MSG dari log drone.">
-              <figcaption>Record <code>MSG</code> dipakai untuk mencari awal misi dan event penting.</figcaption>
+              <img src="8.png" alt="Baris log crash SIM Hit ground.">
+              <figcaption>Timestamp akhir diambil dari event <code>SIM Hit ground</code> saat drone menghantam tanah.</figcaption>
             </figure>
           </div>
           <div class="calc-box">
@@ -316,10 +316,16 @@
             Setelah timestamp crash diketahui, data GPS di sekitar waktu itu bisa dipakai untuk mengambil posisi drone
             ketika menghantam tanah.
           </p>
-          <figure class="terminal-frame">
-            <img src="7.png" alt="Data GPS yang berhubungan dengan momen crash.">
-            <figcaption>Koordinat crash diambil dari record GPS yang paling dekat dengan event benturan.</figcaption>
-          </figure>
+          <div class="image-grid two-up">
+            <figure class="terminal-frame">
+              <img src="8.png" alt="Timestamp crash dari log MSG.">
+              <figcaption>Timestamp crash dipakai sebagai acuan untuk mencari record GPS yang tepat.</figcaption>
+            </figure>
+            <figure class="terminal-frame">
+              <img src="7.png" alt="Data GPS yang berhubungan dengan momen crash.">
+              <figcaption>Koordinat crash diambil dari record GPS yang paling dekat dengan event benturan.</figcaption>
+            </figure>
+          </div>
           <div class="answer-box">
             <span class="answer-label">Jawaban</span>
             <strong>47.4903055, 19.0460476</strong>
@@ -358,11 +364,12 @@
           </div>
           <p class="step-desc">
             Record GPS juga bisa difilter untuk mengambil nilai maksimum. Dari situ kita bisa mengetahui altitude
-            tertinggi yang sempat dicapai drone selama menjalankan misi.
+            tertinggi yang sempat dicapai drone selama menjalankan misi. Screenshot di bawah menunjukkan sumber record
+            GPS yang dipakai, lalu nilai maksimumnya dihitung dari field altitude pada data yang sama.
           </p>
           <figure class="terminal-frame">
-            <img src="9.png" alt="Output command untuk mengambil nilai maksimum dari data GPS.">
-            <figcaption>Command ini dipakai untuk mengekstrak nilai maksimum dari record GPS.</figcaption>
+            <img src="7.png" alt="Record GPS mentah yang menampilkan field altitude.">
+            <figcaption>Field <code>Alt</code> pada record GPS menjadi sumber utama untuk menghitung altitude maksimum.</figcaption>
           </figure>
           <div class="answer-box">
             <span class="answer-label">Jawaban</span>
