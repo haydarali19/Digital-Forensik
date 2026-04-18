@@ -3,8 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AOTR4 | Drone di Tengah Salju</title>
-  <meta name="description" content="Writeup digital forensik berbahasa Indonesia untuk challenge AOTR4 dengan struktur task 1 sampai task 13.">
+  <title>AOTR4 | Writeup Drone di Tengah Salju</title>
+  <meta name="description" content="Writeup digital forensik berbahasa Indonesia untuk challenge AOTR4 dengan struktur task 1 sampai task 13, lengkap dengan gambar, langkah analisis, dan jawaban final.">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -25,8 +25,8 @@
           <h1>Drone di Tengah Salju</h1>
           <p class="lead">
             Halaman ini dibuat mengikuti pola writeup 0xhouda: urut, berbasis gambar, dan langsung fokus ke task
-            yang harus dijawab. Bahasanya saya ubah ke Indonesia, tetapi jawaban dan alur analisisnya tetap disusun
-            setepat mungkin dengan challenge aslinya.
+            yang harus dijawab. Saya ubah tampilannya ke HTML + CSS statis, lalu semua penjelasan dibuat dalam
+            bahasa Indonesia supaya enak dibaca saat presentasi atau submit writeup.
           </p>
 
           <div class="hero-meta">
@@ -38,10 +38,10 @@
 
         <aside class="hero-card">
           <p class="card-label">Isi Utama</p>
-          <h2>Flight plan, log crash, koordinat, dan jawaban akhir.</h2>
+          <h2>Flight plan, log crash, koordinat, dan jawaban final dalam satu halaman.</h2>
           <p>
-            Saya pecah setiap bagian menjadi format yang konsisten: pertanyaan task, bukti visual yang relevan,
-            penjelasan singkat dalam bahasa Indonesia, lalu jawaban final yang jelas.
+            Setiap bagian dipecah ke pola yang konsisten: pertanyaan task, bukti visual yang relevan, penjelasan
+            singkat dalam bahasa Indonesia, lalu jawaban final yang mudah dipindai.
           </p>
           <a class="button-link" href="#steps">Lihat semua task</a>
         </aside>
@@ -87,6 +87,21 @@
         </figure>
       </section>
 
+      <section class="flow-strip" aria-label="Alur analisis">
+        <div class="flow-chip">
+          <span>01</span>
+          <p>Buka <code>flight plan</code> untuk memahami jalur misi dan waypoint.</p>
+        </div>
+        <div class="flow-chip">
+          <span>02</span>
+          <p>Identifikasi landmark, titik hold, dan jalur penyeberangan sungai.</p>
+        </div>
+        <div class="flow-chip">
+          <span>03</span>
+          <p>Baca <code>log.bin</code> untuk menemukan crash time, koordinat, dan statistik penerbangan.</p>
+        </div>
+      </section>
+
       <section class="steps" id="steps">
         <div class="section-heading">
           <p class="section-tag">Step by Step</p>
@@ -102,9 +117,9 @@
             </div>
           </div>
           <p class="step-desc">
-            Dari tampilan flight plan, kita bisa menghitung seluruh item misi yang tersusun di jalur penerbangan.
-            Karena task ini meminta total keseluruhan, maka <em>Home</em>, <em>Takeoff</em>, waypoint, dan <em>Land</em>
-            semuanya ikut dihitung.
+            Dari tampilan flight plan, kita hitung semua item misi yang muncul di daftar rute. Karena task ini
+            meminta jumlah total, maka <em>Home</em>, <em>Takeoff</em>, seluruh waypoint, dan <em>Land</em> semuanya
+            harus ikut dihitung.
           </p>
           <div class="image-grid two-up">
             <figure>
@@ -132,7 +147,8 @@
           </div>
           <p class="step-desc">
             Setelah total item misi diketahui, langkah berikutnya adalah memisahkan waypoint biasa dari waypoint
-            bertipe spline. Dari plan yang terlihat, sebagian besar rute memang dibentuk dengan spline waypoint.
+            bertipe spline. Dari daftar mission item yang terlihat, sebagian besar rute memang dibentuk dengan spline
+            waypoint.
           </p>
           <div class="image-grid two-up">
             <figure>
@@ -159,8 +175,8 @@
             </div>
           </div>
           <p class="step-desc">
-            Dari peta di QGroundControl, area yang dikelilingi drone terlihat cukup jelas. Jalurnya membentuk putaran
-            di sekitar sebuah landmark yang menonjol di kawasan tersebut.
+            Dari peta di QGroundControl, area yang dikelilingi drone terlihat cukup jelas. Jalur misinya membentuk
+            putaran di sekitar sebuah landmark yang cukup menonjol di kawasan itu.
           </p>
           <figure class="feature-frame">
             <img src="2.png" alt="Area bangunan yang dikelilingi drone pada mission plan.">
@@ -181,8 +197,8 @@
             </div>
           </div>
           <p class="step-desc">
-            Hold atau loiter bisa dicari dari detail mission item yang memiliki waktu tunggu. Saat salah satu titik
-            dibuka, terlihat ada waypoint tertentu yang disetel untuk berhenti sejenak.
+            Hold atau loiter dapat dicari dari detail mission item yang memiliki waktu tunggu. Saat salah satu titik
+            dibuka, terlihat ada waypoint tertentu yang memang disetel untuk berhenti sejenak.
           </p>
           <figure class="feature-frame">
             <img src="3.png" alt="Detail mission item dengan hold time pada QGroundControl.">
@@ -203,8 +219,8 @@
             </div>
           </div>
           <p class="step-desc">
-            Karena hold point-nya sudah ketemu, durasi tunggunya bisa dibaca langsung pada properti waypoint yang sama.
-            Nilainya terlihat jelas di panel konfigurasi QGroundControl.
+            Karena hold point-nya sudah ditemukan, durasi tunggunya bisa dibaca langsung pada properti waypoint yang
+            sama. Nilainya terlihat jelas di panel konfigurasi QGroundControl.
           </p>
           <figure class="feature-frame">
             <img src="3.png" alt="Durasi hold time pada mission item tertentu.">
@@ -225,8 +241,8 @@
             </div>
           </div>
           <p class="step-desc">
-            Pada bagian rute yang menyeberangi sungai, kita bisa melihat nama jembatan yang dilintasi jalur misi.
-            Ini menjadi penanda geografis yang cukup mudah dikenali di peta.
+            Pada bagian rute yang menyeberangi sungai, kita bisa melihat nama jembatan yang dilalui jalur misi. Ini
+            menjadi penanda geografis yang cukup mudah dikenali pada peta.
           </p>
           <figure class="feature-frame">
             <img src="4.png" alt="Rute drone saat melintasi jembatan di atas Danube.">
@@ -247,8 +263,8 @@
             </div>
           </div>
           <p class="step-desc">
-            Di log penerbangan, kita bisa mengambil timestamp awal misi dan timestamp saat drone crash. Selisih keduanya
-            kemudian dibagi satu juta karena field <code>TimeUS</code> disimpan dalam mikrodetik.
+            Di log penerbangan, kita ambil timestamp awal misi dan timestamp saat drone crash. Selisih keduanya lalu
+            dibagi satu juta karena field <code>TimeUS</code> disimpan dalam satuan mikrodetik.
           </p>
           <div class="image-grid two-up">
             <figure class="terminal-frame">
@@ -280,8 +296,8 @@
             </div>
           </div>
           <p class="step-desc">
-            Saat pesan crash ditemukan, field <code>TimeUS</code> yang menempel pada baris itu menjadi timestamp pasti
-            dari event benturan.
+            Saat pesan crash ditemukan, field <code>TimeUS</code> pada baris tersebut menjadi timestamp pasti dari
+            event benturan.
           </p>
           <figure class="terminal-frame">
             <img src="8.png" alt="Baris log yang menunjukkan event crash SIM Hit ground.">
@@ -302,8 +318,8 @@
             </div>
           </div>
           <p class="step-desc">
-            Setelah timestamp crash diketahui, data GPS di sekitar waktu tersebut bisa dipakai untuk mengambil posisi
-            drone ketika menghantam tanah.
+            Setelah timestamp crash diketahui, data GPS di sekitar waktu itu bisa dipakai untuk mengambil posisi drone
+            ketika menghantam tanah.
           </p>
           <figure class="terminal-frame">
             <img src="7.png" alt="Data GPS yang berhubungan dengan momen crash.">
@@ -324,8 +340,8 @@
             </div>
           </div>
           <p class="step-desc">
-            Baris crash yang sama tidak hanya memberi timestamp, tetapi juga mencantumkan nilai kecepatan tumbukan
-            saat drone menyentuh tanah.
+            Baris crash yang sama tidak hanya memberi timestamp, tetapi juga mencantumkan nilai kecepatan tumbukan saat
+            drone menyentuh tanah.
           </p>
           <figure class="terminal-frame">
             <img src="8.png" alt="Nilai ground impact speed pada pesan crash.">
@@ -346,7 +362,7 @@
             </div>
           </div>
           <p class="step-desc">
-            Record GPS juga bisa difilter untuk mengambil nilai maksimum. Dari sana kita bisa mengetahui altitude
+            Record GPS juga bisa difilter untuk mengambil nilai maksimum. Dari situ kita bisa mengetahui altitude
             tertinggi yang sempat dicapai drone selama menjalankan misi.
           </p>
           <figure class="terminal-frame">
@@ -409,8 +425,8 @@
           <p class="section-tag">Ringkasan Final</p>
           <h2>Semua jawaban sudah disusun sesuai task challenge</h2>
           <p>
-            Halaman ini sekarang tidak lagi terasa seperti landing page umum, tetapi lebih seperti technical writeup
-            yang rapi. Setiap task punya bukti, penjelasan singkat, dan jawaban final yang gampang dipindai.
+            Halaman ini sekarang terasa seperti technical writeup yang rapi. Setiap task punya bukti visual,
+            penjelasan singkat berbahasa Indonesia, dan jawaban final yang gampang dipindai.
           </p>
         </div>
         <div class="result-panel">
